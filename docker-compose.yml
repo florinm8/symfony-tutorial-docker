@@ -19,7 +19,7 @@ services:
     build:
       context: ./build/php80
       args:
-        SYMFONY_CLI_VERSION: 4.25.9
+        SYMFONY_CLI_VERSION: 4.26.6
     container_name: sym-php
     ports:
       - 9000
@@ -31,6 +31,8 @@ services:
       - ./home/ssh/:/var/www/.ssh/
       - ./src:/var/www/html
 #      - ./var/log/php:/var/log
+    environment:
+      PHP_IDE_CONFIG: "serverName=${PHP_IDE_SERVER_NAME}"
   mysql:
     image: mysql:8
     command: ["--default-authentication-plugin=mysql_native_password"]
