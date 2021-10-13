@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  web:
+    image: nginx
+    container_name: sym-web
+    depends_on:
+      - php
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./etc/nginx/certs:/usr/local/nginx/conf/certs
+      - ./etc/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./etc/nginx/sites-enabled/:/etc/nginx/conf.d/sites-enabled/
+      - ./src:/var/www/html
+#      - ./var/log/nginx:/var/log
+  php:
+    build:
+      context: ./build/php80
+      args:
+        SYMFONY_CLI_VERSION: 4.25.9
+    container_name: sym-php
+    ports:
+      - 9000
+    volumes:
+      - ./etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
+      - ./etc/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./home/.aliases:/var/www/.aliases
+      - ./home/.bashrc:/var/www/.bashrc
+      - ./home/ssh/:/var/www/.ssh/
+      - ./src:/var/www/html
+#      - ./var/log/php:/var/log
+  mysql:
+    image: mysql:8
+    command: ["--default-authentication-plugin=mysql_native_password"]
+    container_name: sym-db
+    cap_add:
+      - SYS_NICE  # CAP_SYS_NICE
+    security_opt:
+      - seccomp:unconfined
+    ports:
+      - "${MYSQL_PORT}:3306"
+    environment:
+        MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+        MYSQL_DATABASE: ${MYSQL_DATABASE}
+        MYSQL_USER: ${MYSQL_USER}
+        MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    volumes:
+      - ./etc/mysql/custom.cnf:/etc/mysql/conf.d/custom.cnf
+      - sym-db-data-mysql:/var/lib/mysql
+#      - ./var/log/mysql:/var/log
+  redis:
+    image: redis:latest
+    container_name: sym-rs
+    ports:
+      - 6379
+  mailhog:
+    image: mailhog/mailhog
+    container_name: sym-mail
+    ports:
+      - "127.0.0.1:8025:8025"
+volumes:
+  sym-db-data-mysql: {}
