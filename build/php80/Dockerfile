@@ -8,6 +8,7 @@ RUN apt-get update \
     build-essential \
     curl \
     cron \
+    exiftool \
     gnupg \
     libfreetype6-dev \
     libicu-dev \
@@ -43,26 +44,34 @@ RUN pecl install mcrypt
 
 RUN docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp
 
+#configure exif
+RUN docker-php-ext-configure exif
+
 # Configure the imap library
 RUN docker-php-ext-configure \
   imap --with-kerberos --with-imap-ssl
 
 RUN docker-php-ext-install \
-  gd \
-  mbstring \
-  pdo_mysql \
-  xsl \
   bcmath \
-  imap \
-  curl \
-  iconv \
-  intl \
   ctype \
+  curl \
+  exif \
+  gd \
+  iconv \
+  imap \
+  intl \
+  mbstring \
+  mysqli \
+  opcache \
+  pdo \
+  pdo_mysql \
   simplexml \
-  zip \
   soap \
-  sockets
+  sockets \
+  xsl \
+  zip
 
+RUN docker-php-ext-enable exif
 # Install the 3.0 version of xdebug
 RUN pecl install -o -f xdebug-3.0.0 && docker-php-ext-enable xdebug
 
