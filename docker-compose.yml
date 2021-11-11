@@ -25,7 +25,8 @@ services:
       - 9000
     volumes:
       - ./etc/php/php-fpm.d/www.conf:/usr/local/etc/php-fpm.d/www.conf
-      - ./etc/php/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
+      - ./etc/php/conf.d/overwrite.ini:/usr/local/etc/php/conf.d/overwrite.ini
+      - ./etc/php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini
       - ./home/.aliases:/var/www/.aliases
       - ./home/.bashrc:/var/www/.bashrc
       - ./home/ssh/:/var/www/.ssh/

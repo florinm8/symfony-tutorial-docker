@@ -109,6 +109,9 @@ RUN updatedb
 RUN apt-get -y clean && apt-get -y autoclean && apt-get -y autoremove && \
   rm -rf /var/lib/apt/lists/* && rm -rf && rm -rf /var/lib/cache/* && rm -rf /var/lib/log/* && rm -rf /tmp/*
 
+#add default development ini (for cli)
+RUN cp /usr/local/etc/php/php.ini-development /usr/local/etc/php/php.ini
+
 USER www-data
 WORKDIR /var/www/html
 
